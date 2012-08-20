@@ -1,0 +1,9 @@
+{
+	"folders":
+	[
+		{
+			"path": "ld24",
+			"file_exclude_patterns": [ "ld24.sublime-*" ]
+		}
+	]
+}
