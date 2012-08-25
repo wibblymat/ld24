@@ -2,24 +2,16 @@
 <html>
 	<head>
 		<title>LD 24 Game</title>
-		<script type="text/javascript" src="js/requestAnimationFrame.js"></script>
 		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/Controls.js"></script>
-		<script type="text/javascript" src="js/Drawing.js"></script>
+		<script type="text/javascript" src="js/crafty.js"></script>
+		<script type="text/javascript" src="js/Scenes.js"></script>
+		<script type="text/javascript" src="js/Components.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<link rel="stylesheet" href="css/game.css" type="text/css"></script>
 	</head>
 	<body style="margin: 0px;">
-		<div class="container" style="border: 1px black solid; margin: 0px auto; width: 1024px;">
-			<img id="loading" src="images/loading.png" />
-			<canvas id="game"></canvas>
-			<div style="display: none;" id="images">
-				<!-- <img id="" src="images/" /> -->
-				<img id="rocks" src="images/rocks.png" />
-				<img id="grass" src="images/grass.png" />
-			</div>
-			<div style="display: none;" id="sounds">
-				<!-- <audio src="sounds/" preload="true" id=""></audio> -->
+		<div class="container" style="border: 1px black solid; margin: 0px auto; width: 800px;">
+			<div id="cr-stage">
 			</div>
 			<div>This game is part of the <a href="http://ludumdare.com">Ludum Dare #24</a> 48 hour game competition</div>
 
