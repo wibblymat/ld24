@@ -2,16 +2,34 @@
 <html>
 	<head>
 		<title>LD 24 Game</title>
+		<script type="text/javascript" src="js/requestAnimationFrame.js"></script>
 		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/crafty.js"></script>
-		<script type="text/javascript" src="js/Scenes.js"></script>
-		<script type="text/javascript" src="js/Components.js"></script>
+		<script type="text/javascript" src="js/Controls.js"></script>
+		<script type="text/javascript" src="js/Drawing.js"></script>
+		<script type="text/javascript" src="js/Sprites.js"></script>
+		<script type="text/javascript" src="js/Game.js"></script>
+		<script type="text/javascript" src="js/Map.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<link rel="stylesheet" href="css/game.css" type="text/css"></script>
 	</head>
 	<body style="margin: 0px;">
-		<div class="container" style="border: 1px black solid; margin: 0px auto; width: 800px;">
-			<div id="cr-stage">
+		<div class="container" style="border: 1px black solid; margin: 0 auto; width: 800px;">
+			<div class="stage">
+				<div class="ui">
+					<ul class="unit-selection">
+						<li>Soldier</li>
+						<li>Knight</li>
+					</ul>
+					<ul class="orders">
+					</ul>
+				</div>
+				<canvas class="game" id="game"></canvas>
+			</div>
+			<div style="display: none;" id="images">
+				<img id="sprites" src="images/sprites.png" />
+			</div>
+			<div style="display: none;" id="sounds">
+				<!-- <audio src="sounds/" preload="true" id=""></audio> -->
 			</div>
 			<div>This game is part of the <a href="http://ludumdare.com">Ludum Dare #24</a> 48 hour game competition</div>
 

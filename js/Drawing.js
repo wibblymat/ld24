@@ -4,6 +4,10 @@ function Drawing(canvas)
 {
 	this.canvas = canvas;
 	this.context = canvas.getContext("2d");
+	this.context.fillStyle = "black";
+	this.context.font = "16px Consolas, Monospace, Arial, sans-serif";
+	this.context.textAlign = "left";
+	this.context.textBaseline = "top";
 }
 
 Drawing.prototype.clear = function()
@@ -35,7 +39,23 @@ Drawing.prototype.line = function(x1, y1, x2, y2, colour)
 	this.context.restore();
 };
 
+Drawing.prototype.rect = function(x1, y1, x2, y2, colour)
+{
+	this.context.save();
+	this.context.fillStyle = colour;
+	this.context.fillRect(x1, y1, x2, y2);
+	this.context.restore();
+};
+
 Drawing.prototype.sprite = function(image, x, y)
 {
-	this.context.drawImage(image, x, y);
+	this.context.drawImage(image, Math.floor(x), Math.floor(y));
+};
+
+Drawing.prototype.write = function(text, x, y, colour)
+{
+	this.context.save();
+	this.context.fillStyle = colour;
+	this.context.fillText(text, x, y);
+	this.context.restore();
 };

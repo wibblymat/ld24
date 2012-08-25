@@ -1,0 +1,38 @@
+.stage {
+	position: relative;
+	padding: 0;
+	margin: 0;
+	height: 600px;
+}
+
+.game {
+	position: relative;
+	top: 0;
+	left: 0;
+	padding: 0;
+	margin: 0;
+}
+
+.ui {
+	float: right;
+	position: absolute;
+	top: 0;
+	left: 593px;
+	width: 206px;
+	height: 592px;
+	padding: 0;
+	margin: 0;
+}
+
+.unit-selection {
+	padding: 0;
+	margin: 0;
+}
+
+.unit-selection li {
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	list-style: none none inside;
+	width: 100px;
+}

@@ -28,8 +28,8 @@ var Controls = function(canvas)
 			posy = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 		}
 
-		posx -= canvas.offsetLeft;
-		posy -= canvas.offsetTop;
+		posx -= canvas.parentElement.offsetLeft;
+		posy -= canvas.parentElement.offsetTop;
 
 		return [posx, posy];
 	};
@@ -49,14 +49,18 @@ var Controls = function(canvas)
 		event.preventDefault();
 		event.stopPropagation();
 
-		controls.buttonState[event.which] = {'start': mouseEventPosition(event), 'end': null};
+		controls.buttonState[event.which] = {'start': mouseEventPosition(event), 'end': null, 'event': event};
 	};
 
 	var mouseUpHandler = function(event)
 	{
 		var position = mouseEventPosition(event);
-		if(!controls.buttonState[event.which]) controls.buttonState[event.which] = {'start': position, 'end': position};
-		else controls.buttonState[event.which].end = position;
+		if(!controls.buttonState[event.which]) controls.buttonState[event.which] = {'start': position, 'end': position, 'event': event};
+		else
+		{
+			controls.buttonState[event.which].end = position;
+			controls.buttonState[event.which].event = event;
+		}
 	};
 
 	var mouseMoveHandler = function( event )
@@ -77,12 +81,12 @@ var Controls = function(canvas)
 
 	var keyDown = function(event)
 	{
-		controls.keyState[event.keyCode] = 'down';
+		controls.keyState[event.keyCode] = true;
 	};
 
 	var keyUp = function(event)
 	{
-		controls.keyState[event.keyCode] = 'up';
+		controls.keyState[event.keyCode] = false;
 	};
 
 	windowObject.resize(resize);
