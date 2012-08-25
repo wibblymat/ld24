@@ -23,7 +23,9 @@ window.onload = function()
 		"grass": [0, 6],
 		"rock": [1, 6],
 		"soldier": [2, 6],
-		"knight": [3, 6]
+		"knight": [3, 6],
+		"heart": [0, 7],
+		"boot": [1, 7]
 	});
 
 	var terrainTiles = [null, sprites.grass, sprites.rock];
@@ -148,8 +150,14 @@ window.onload = function()
 		}
 	};
 
-	var ai = function()
+	var aiupdate = function()
 	{
+		endAITurn();
+	};
+
+	var aiplan = function()
+	{
+
 	};
 
 	var draw = function()
@@ -185,13 +193,38 @@ window.onload = function()
 		for(var i = 0; i < Game.selected.items.length; i++)
 		{
 			var item = Game.selected.items[i];
-			$(".unit-selection").append($("<li>" + item.name + "</li>"));
+			$(".unit-selection").append($("<li><img class='unit-icon' href='" + sprites[item.sprite].toDataURL() + "'/><div class='name'>" + item.name + "</div><div class='health'>" + item.health + "</div><div class='move'>" + item.moveLeft + "/" + item.speed + "</div></li>"));
 		}
 	};
 
-	var endTurn = function()
+	var endAITurn = function()
 	{
+		var i;
 
+		for(i = 0; i < Game.units.length; i++)
+		{
+			var unit = Game.units[i];
+			if(unit.side === 0)
+			{
+				unit.startTurn();
+			}
+		}
+
+		for(i = 0; i < Game.buildings.length; i++)
+		{
+			var building = Game.buildings[i];
+			if(building.side === 0)
+			{
+				building.startTurn();
+			}
+		}
+
+		loop();
+	};
+
+	Game.endTurn = function()
+	{
+		ailoop();
 	};
 
 	drawing.focus();

@@ -96,7 +96,7 @@ Game.Unit = function(side, x, y)
 					if(this.y < this.target[1]) this.nextTile[1]++;
 					if(this.y > this.target[1]) this.nextTile[1]--;
 
-					this.moveFramesLeft = 40;
+					this.moveFramesLeft = 10;
 					this.moveLeft--;
 				}
 				else

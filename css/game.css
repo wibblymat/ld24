@@ -3,6 +3,7 @@
 	padding: 0;
 	margin: 0;
 	height: 600px;
+	font-family: Consolas, monospace, Arial;
 }
 
 .game {
@@ -27,6 +28,7 @@
 .unit-selection {
 	padding: 0;
 	margin: 0;
+	height: 290px;
 }
 
 .unit-selection li {
@@ -36,3 +38,31 @@
 	list-style: none none inside;
 	width: 100px;
 }
+
+.unit-selection li .name {
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.unit-selection li .health{
+	font-size: 12px;
+}
+
+.unit-selection li .move{
+	font-size: 12px;
+}
+
+.orders {
+	padding: 0;
+	margin: 0;
+	height: 300px;
+}
+
+.orders li {
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	list-style: none none inside;
+	width: 100px;
+}
+
