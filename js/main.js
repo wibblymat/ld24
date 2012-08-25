@@ -28,6 +28,11 @@ window.onload = function()
 		"boot": [1, 7]
 	});
 
+	var music = $("#music").get(0);
+
+	music.loop = true;
+	music.play();
+
 	var terrainTiles = [null, sprites.grass, sprites.rock];
 	var map = new Map();
 
@@ -193,7 +198,7 @@ window.onload = function()
 		for(var i = 0; i < Game.selected.items.length; i++)
 		{
 			var item = Game.selected.items[i];
-			$(".unit-selection").append($("<li><img class='unit-icon' src='" + sprites[item.sprite].toDataURL() + "'/><div class='name'>" + item.name + "</div><div class='health'>" + item.health + "</div><div class='move'>" + item.moveLeft + "/" + item.speed + "</div></li>"));
+			$(".unit-selection").append($("<li><img class='unit-icon' src='" + /*sprites[item.sprite].toDataURL()*/'' + "'/><div class='name'>" + item.name + "</div><div class='health'>" + item.health + "</div><div class='move'>" + item.moveLeft + "/" + item.speed + "</div></li>"));
 		}
 	};
 
@@ -220,12 +225,15 @@ window.onload = function()
 		}
 
 		loop();
+		turn++;
 	};
 
 	Game.endTurn = function()
 	{
 		ailoop();
 	};
+
+	Game.stopMusic = function(){ music.pause(); };
 
 	drawing.focus();
 	//mapEditLoop();

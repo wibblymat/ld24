@@ -96,8 +96,16 @@ Game.Unit = function(side, x, y)
 					if(this.y < this.target[1]) this.nextTile[1]++;
 					if(this.y > this.target[1]) this.nextTile[1]--;
 
-					this.moveFramesLeft = 10;
-					this.moveLeft--;
+					if(this.nextTile[0] === this.x && this.nextTile[1] === this.y)
+					{
+						this.active = false;
+						this.nextTile = null;
+					}
+					else
+					{
+						this.moveFramesLeft = 10;
+						this.moveLeft--;
+					}
 				}
 				else
 				{
@@ -225,7 +233,7 @@ Game.reset = function()
 		new Game.Temple(0, 1, 3),
 		new Game.Workshop(0, 1, 5)
 	];
-	Game.units = [new Game.Soldier(0, 10, 10), new Game.Knight(0, 15, 15)];
+	Game.units = [new Game.Soldier(0, 10, 10), new Game.Knight(0, 15, 15), new Game.Soldier(1, 12, 12)];
 	Game.selected.clear();
 	Game.bonuses = [
 		{strength: 1, armor: 1, speed: 1, mounted: 1, spawn: 1, building: 1, xp: 1, collection: 1, house: 1, health: 1},
