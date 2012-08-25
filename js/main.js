@@ -8,15 +8,15 @@ window.onload = function()
 	Crafty.init(800, 600);
 	Crafty.canvas.init();
 
-	Crafty.c("button", new Game.Components.Button());
-	Crafty.c("terrain", new Game.Components.Terrain());
-	Crafty.c("clickable", new Game.Components.Clickable());
-	Crafty.c("building", new Game.Components.Building());
-	Crafty.c("solid", new Game.Components.Solid());
+	for(var component in Game.Components)
+	{
+		Crafty.c(component.toLowerCase(), new Game.Components[component]());
+	}
 
-	Crafty.scene("loading", Game.Scenes.loading);
-	Crafty.scene("menu", Game.Scenes.menu);
-	Crafty.scene("main", Game.Scenes.main);
+	for(var scene in Game.Scenes)
+	{
+		Crafty.scene(scene, Game.Scenes[scene]);
+	}
 
 	Crafty.scene("loading");
 };

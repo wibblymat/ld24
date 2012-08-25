@@ -16,11 +16,12 @@ Game.Scenes.loading = function()
 			"grass": [0, 6]
 		});
 
-		Crafty.scene("menu");
+		//Crafty.scene("menu");
+		Crafty.scene("main");
 	});
 
 	Crafty.background("black");
-	Crafty.e("2D, DOM, Text")
+	Crafty.e("drawn, Text")
 		.attr({w: 100, h: 20, x: 462, y: 374})
 		.text("Loading...")
 		.textColor("#ffffff")
@@ -43,14 +44,23 @@ Game.Scenes.main = function()
 	var x, y;
 
 	// This is the main game scene
-	for(x = 0; x < 50; x++)
-	{
-		for(y = 0; y < 50; y++)
-		{
-			Crafty.e("terrain").tile("grass", x, y);
-		}
-	}
+	// for(x = 0; x < 8; x++)
+	// {
+	// 	for(y = 0; y < 8; y++)
+	// 	{
+	// 		Crafty.e("terrain").tile("grass", x, y);
+	// 	}
+	// }
+	Crafty.background("green");
+
+
 	Crafty.e("building").tile("temple", 6, 6);
 	Crafty.e("building").tile("spawner", 6, 8);
 	Crafty.e("building").tile("workshop", 6, 10);
+
+	var soldier = Crafty.e("soldier");
+	soldier.x = 0;
+	soldier.y = 0;
+
+	Crafty.viewport.follow(soldier);
 };
