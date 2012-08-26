@@ -82,6 +82,7 @@ var Controls = function(canvas)
 	var keyDown = function(event)
 	{
 		controls.keyState[event.keyCode] = true;
+		//console.log(event.keyCode);
 	};
 
 	var keyUp = function(event)

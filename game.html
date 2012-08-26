@@ -7,26 +7,13 @@
 		<script type="text/javascript" src="js/Controls.js"></script>
 		<script type="text/javascript" src="js/Drawing.js"></script>
 		<script type="text/javascript" src="js/Sprites.js"></script>
-		<script type="text/javascript" src="js/Game.js"></script>
-		<script type="text/javascript" src="js/Map.js"></script>
-		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/Levels.js"></script>
+		<script type="text/javascript" src="js/platformer.js"></script>
 		<link rel="stylesheet" href="css/game.css" type="text/css"></script>
 	</head>
 	<body style="margin: 0px;">
-		<div><strong>The game is unfinished because I gave up. Sorry about that.</strong></div>
-		<div class="container" style="border: 1px black solid; margin: 0 auto; width: 800px;">
-			<div class="stage">
-				<div class="ui">
-					<ul class="unit-selection">
-						<li>Soldier</li>
-						<li>Knight</li>
-					</ul>
-					<ul class="orders">
-						<li onclick="Game.endTurn();">End Turn</li>
-					</ul>
-				</div>
-				<canvas class="game" id="game"></canvas>
-			</div>
+		<div class="container" style="border: 1px black solid; margin: 0 auto; width: 1024px;">
+			<canvas style="border: 1px black solid;" class="game" id="game"></canvas>
 			<div style="display: none;" id="images">
 				<img id="sprites" src="images/sprites.png" />
 			</div>
@@ -34,7 +21,7 @@
 				<!-- <audio src="sounds/" preload="true" id=""></audio> -->
 				<audio src="sounds/autotracker-ld24.ogg" preload="true" id="music"></audio>
 			</div>
-			<button onclick="Game.stopMusic();">Oh god make the music stop</button>
+			<button onclick="Music.pause();">Oh god make the music stop</button>
 			<div>This "game" is part of the <a href="http://www.ludumdare.com/compo/ludum-dare-24/?action=preview&uid=11132">Ludum Dare #24</a> 48 hour game competition</div>
 
 			<ul class="nav nav-list">
