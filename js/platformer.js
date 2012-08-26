@@ -3,8 +3,8 @@
 
 window.onload = function()
 {
-	var width = 1024;
-	var height = 768;
+	var width = 800;
+	var height = 480;
 
 	var canvas = $("#game").get(0);
 	canvas.width = width;
@@ -26,24 +26,63 @@ window.onload = function()
 		"boot": [1, 7]
 	});
 
+	var sounds = {
+		"boss": $("#boss-sound").get(0),
+		"boss_dead": $("#boss-dead-sound").get(0),
+		"boss_hit": $("#boss-hit-sound").get(0),
+		"hurt": $("#hurt-sound").get(0),
+		"jump": $("#jump-sound").get(0),
+		"kill": $("#kill-sound").get(0),
+		"missile": $("#missile-sound").get(0),
+		"pickup": $("#pickup-sound").get(0),
+		"shoot": $("#shoot-sound").get(0)
+	};
+
+	window.sounds = sounds;
+
 	window.Music = $("#music").get(0);
 
 	window.Music.loop = true;
 //	window.Music.play();
 
-	var level, lives, player = {}, xscroll, standing, direction, flashing, bullets, shootDelay;
+	var frame, level, lives, player = {}, xscroll, scrolling, standing, direction, flashing, bullets, shootDelay, monsters, levelObjects, boss, missile;
 
 	var reset = function()
 	{
 		level = 1;
 		lives = 3;
-		player = {x:0, y: 17, dx: 0, dy: 0};
+		frame = 0;
+		shootDelay = 0;
+		startLevel();
+	};
+
+	var startLevel = function()
+	{
+
+		var i, object, monster;
+		levelObjects = [];
 		xscroll = 0;
-		standing = true;
+		player = {x:0, y: 17, dx: 0, dy: 0};
+		boss = null;
+		monsters = [];
+		missile = null;
+		scrolling = true;
+		bullets = [];
 		direction = 1;
 		flashing = 60;
-		bullets = [];
-		shootDelay = 0;
+		standing = true;
+
+		for(i in Levels[level - 1].objects)
+		{
+			object = Levels[level - 1].objects[i];
+			levelObjects.push({x: object[0], y: object[1], width: object[2], height: object[3], type: object[4]});
+		}
+
+		for(i in Levels[level - 1].monsters)
+		{
+			monster = Levels[level - 1].monsters[i];
+			monsters.push({x: monster[0], y: monster[1], dx: monster[2], dy: 0});
+		}
 	};
 
 	reset();
@@ -65,24 +104,36 @@ window.onload = function()
 	var die = function()
 	{
 		lives--;
+		sounds.hurt.play();
 		if(lives < 0) lose();
-		else reset();
+		else startLevel();
 	};
 
 	var win = function()
 	{
+		if(level < Levels.length) level++;
+		else victory();
+	};
 
+	var victory = function()
+	{
+		if(frameRequest) window.cancelAnimationFrame(frameRequest);
+		frameRequest = window.requestAnimationFrame(victory);
+
+		drawing.clear();
+		drawing.write("You win, the end", 100, 100, "yellow");
 	};
 
 	var lose = function()
 	{
-
+		reset();
 	};
 
 	var shoot = function()
 	{
 		if(shootDelay <= 0)
 		{
+			sounds.shoot.play();
 			bullets.push({x: (player.x + 8) + 8 * direction, y: player.y + 8, speed: direction * 10});
 			shootDelay = 15;
 		}
@@ -90,13 +141,13 @@ window.onload = function()
 
 	var collision = function(x1, y1, x2, y2, object)
 	{
-		var cleft = x1 + 16 <= object[0] && x2 + 16 >= object[0];
-		var cright = x1 >= object[0] + object[2] && x2 <= object[0] + object[2];
-		var ctop = y1 >= object[1] + object[3] && y2 <= object[1] + object[3];
-		var cbottom = y1 + 16 <= object[1] && y2 + 16 >= object[1];
+		var cleft = x1 + 16 <= object.x && x2 + 16 >= object.x;
+		var cright = x1 >= object.x + object.width && x2 <= object.x + object.width;
+		var ctop = y1 >= object.y + object.height && y2 <= object.y + object.height;
+		var cbottom = y1 + 16 <= object.y && y2 + 16 >= object.y;
 
-		var ox = x2 + 16 >= object[0] && x2 <= object[0] + object[2];
-		var oy = y2 + 16 >= object[1] && y2 <= object[1] + object[3];
+		var ox = x2 + 16 >= object.x && x2 <= object.x + object.width;
+		var oy = y2 + 16 >= object.y && y2 <= object.y + object.height;
 
 		var collide = {l: false, r: false, t: false, b: false};
 
@@ -120,9 +171,23 @@ window.onload = function()
 		return collide;
 	};
 
+	var killmonster = function(index)
+	{
+		// TODO: Animation, SFX, etc.
+		sounds.kill.play();
+		monsters.splice(index, 1);
+	};
+
 	var update = function()
 	{
-		var i, object, endx, endy;
+		var i, j, object, endx, endy, collide, monster;
+
+		frame = (frame + 1) % 120;
+
+		if(frame === 0)
+		{
+			monsters.push({x: 1240, y: 460, dx: 1, dy: 0});
+		}
 
 		shootDelay--;
 
@@ -154,29 +219,34 @@ window.onload = function()
 
 		// Collisions and movement
 		standing = false;
-		for(i in Levels[level - 1].objects)
+		for(i in levelObjects)
 		{
-			object = Levels[level - 1].objects[i];
-			var collide = collision(player.x, player.y, endx, endy, object);
+			object = levelObjects[i];
+			collide = collision(player.x, player.y, endx, endy, object);
 
 			if(collide.l)
 			{
-				endx = object[0] - 16;
+				endx = object.x - 16;
 				player.dx = -4;
 			}
 			if(collide.r)
 			{
-				endx = object[0] + object[2];
+				endx = object.x + object.width;
 				player.dx = 4;
 			}
 			if(collide.t)
 			{
-				endy = object[1] + object[3];
+				endy = object.y + object.height;
 				player.dy = 0;
 				standing = true;
 			}
+			if(collide.b)
+			{
+				endy = object.y - 16;
+				player.dy = 0;
+			}
 
-			if((collide.l || collide.r || collide.t || collide.b) && object[4] === "water")
+			if((collide.l || collide.r || collide.t || collide.b) && object.type === "water")
 			{
 				die();
 				return;
@@ -186,13 +256,102 @@ window.onload = function()
 		player.x = endx;
 		player.y = endy;
 
+		if(boss)
+		{
+			boss.tick();
+			if(boss.firing)
+			{
+				boss.firing = false;
+				sounds.missile.play();
+
+				missile = {x: boss.x - 32, y: boss.y - 32};
+
+				missile.dx = player.x - missile.x;
+				missile.dy = player.y - missile.y;
+
+				missile.speed = Math.sqrt(missile.dx*missile.dx + missile.dy*missile.dy);
+				missile.dx = Math.round(missile.dx * 7 / missile.speed);
+				missile.dy = Math.round(missile.dy * 7 / missile.speed);
+			}
+		}
+
+		if(missile)
+		{
+			missile.x += missile.dx;
+			missile.y += missile.dy;
+
+			if(missile.x < player.x + 16 && missile.x + 16 > player.x && missile.y < player.y + 16 && missile.y + 16 > player.y)
+			{
+				die();
+				return;
+			}
+		}
+
+		for(j in monsters)
+		{
+			monster = monsters[j];
+			endx = monster.x + monster.dx;
+			endy = monster.y + monster.dy;
+
+			collide = collision(monster.x, monster.y, endx, endy, {x: player.x, y: player.y, width: 16, height: 16});
+			if(collide.l || collide.r || collide.t || collide.b)
+			{
+				die();
+				return;
+			}
+
+			for(i in levelObjects)
+			{
+				object = levelObjects[i];
+				collide = collision(monster.x, monster.y, endx, endy, object);
+
+				if(collide.l)
+				{
+					endx = object.x - 16;
+					monster.dx *= -1;
+				}
+				if(collide.r)
+				{
+					endx = object.x + object.width;
+					monster.dx *= -1;
+				}
+				if(collide.t)
+				{
+					endy = object.y + object.height;
+					monster.dy = 0;
+				}
+
+				if((collide.l || collide.r || collide.t || collide.b) && object.type === "water")
+				{
+					killmonster(j);
+					break;
+				}
+			}
+
+			monster.x = endx;
+			monster.y = endy;
+
+			if(monster.x + 16 >= Levels[level - 1].width)
+			{
+				monster.dx *= -1;
+				monster.x = Levels[level - 1].width - 17;
+			}
+
+			monster.dy--;
+		}
+
 		// Check for death and end of level
 		if(player.x < 0) player.x = 0;
-		if(player.x > Levels[level - 1].width)
+		if(player.x > Levels[level - 1].width && boss === null)
 		{
 			win();
 			return;
 		}
+		else if(player.x > Levels[level - 1].width)
+		{
+			player.x = Levels[level - 1].width - 1;
+		}
+
 		if(player.y < 0)
 		{
 			die();
@@ -204,10 +363,42 @@ window.onload = function()
 		// Shooting/bullets
 		for(i in bullets)
 		{
-			bullets[i].x += bullets[i].speed;
-		}
+			var bullet = bullets[i];
+			var left = Math.min(bullet.x, bullet.x + bullet.speed);
+			var right = Math.max(bullet.x, bullet.x + bullet.speed);
 
-		// Update monsters
+			for(j in monsters)
+			{
+				monster = monsters[j];
+
+				if(left < monster.x + 16 && right > monster.x && monster.y < bullet.y && monster.y + 16 > bullet.y)
+				{
+					killmonster(j);
+					bullets.splice(i, 1);
+					break;
+				}
+			}
+
+			if(boss)
+			{
+				if(left < boss.x + 32 && right > boss.x - 32  && bullet.y < boss.y + 32 && bullet.y > boss.y - 32)
+				{
+					boss.health--;
+					if(boss.health <= 0)
+					{
+						sounds.boss_dead.play();
+						boss = null;
+					}
+					else
+					{
+						sounds.boss_hit.play();
+					}
+					bullets.splice(i, 1);
+				}
+			}
+
+			bullet.x += bullet.speed;
+		}
 
 		// Friction
 		if(player.dx > 0) player.dx--;
@@ -215,11 +406,20 @@ window.onload = function()
 		player.dy--;
 
 		// Scrolling
-		if(player.x - xscroll > canvas.width - 300) xscroll = player.x - canvas.width + 300;
-		if(xscroll > player.x - 300) xscroll = player.x - 300;
+		if(scrolling)
+		{
+			if(player.x - xscroll > canvas.width - 300) xscroll = player.x - canvas.width + 300;
+			if(xscroll > player.x - 300) xscroll = player.x - 300;
 
-		if(xscroll < 0) xscroll = 0;
-		if(xscroll > Levels[level - 1].width - canvas.width) xscroll = Levels[level - 1].width - canvas.width;
+			if(xscroll < 0) xscroll = 0;
+			if(xscroll > Levels[level - 1].width - canvas.width)
+			{
+				xscroll = Levels[level - 1].width - canvas.width;
+				scrolling = false;
+				boss = new Levels[level - 1].boss();
+				boss.x += (Levels[level - 1].width - 100);
+			}
+		}
 
 		if(flashing > 0) flashing--;
 	};
@@ -228,6 +428,7 @@ window.onload = function()
 		"platform": "white",
 		"player": "red",
 		"monster": "yellow",
+		"missile": "yellow",
 		"water": "blue",
 		"bullet": "green"
 	};
@@ -236,25 +437,44 @@ window.onload = function()
 	{
 		var i;
 		drawing.clear();
+
+		for(i = 0; i < lives; i++)
+		{
+			drawing.sprite(sprites.heart, 10 + i * 16, canvas.height - 10);
+		}
+
 		if(flashing === 0 || flashing % 3 === 0)
 			drawing.rect(player.x - xscroll, player.y, 16, 16, colours.player);
 
-		for(i = 0; i < Levels[level - 1].objects.length; i++)
+		for(i = 0; i < levelObjects.length; i++)
 		{
-			var o = Levels[level - 1].objects[i];
-			drawing.rect(o[0] - xscroll, o[1], o[2], o[3], colours[o[4]]);
+			var o = levelObjects[i];
+			drawing.rect(o.x - xscroll, o.y, o.width, o.height, colours[o.type]);
 		}
 
-		for(i = 0; i < Levels[level - 1].monsters.length; i++)
+		for(i = 0; i < monsters.length; i++)
 		{
-			var m = Levels[level - 1].monsters[i];
-			drawing.rect(m[0] - xscroll, m[1], 16, 16, colours["monster"]);
+			var m = monsters[i];
+			drawing.rect(m.x - xscroll, m.y, 16, 16, colours["monster"]);
 		}
 
 		for(i = 0; i < bullets.length; i++)
 		{
 			var b = bullets[i];
 			drawing.rect(b.x - xscroll, b.y, 6, 2, colours["bullet"]);
+		}
+
+		if(boss !== null)
+		{
+			var colour = [ Math.floor( Math.random() * 256 ), Math.floor( Math.random() * 256 ), Math.floor( Math.random() * 256 ) ];
+			var randcolour = "rgb( " + colour[ 0 ] + ", " + colour[ 1 ] + ", " + colour[ 2 ] + " )";
+
+			drawing.rect(boss.x - xscroll - 32, boss.y - 32, 64, 64, randcolour);
+		}
+
+		if(missile)
+		{
+			drawing.rect(missile.x - xscroll, missile.y, 16, 16, colours["missile"]);
 		}
 	};
 

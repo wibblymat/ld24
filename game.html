@@ -12,7 +12,7 @@
 		<link rel="stylesheet" href="css/game.css" type="text/css"></script>
 	</head>
 	<body style="margin: 0px;">
-		<div class="container" style="border: 1px black solid; margin: 0 auto; width: 1024px;">
+		<div class="container" style="border: 1px black solid; margin: 0 auto; width: 800px;">
 			<canvas style="border: 1px black solid;" class="game" id="game"></canvas>
 			<div style="display: none;" id="images">
 				<img id="sprites" src="images/sprites.png" />
@@ -20,6 +20,15 @@
 			<div style="display: none;" id="sounds">
 				<!-- <audio src="sounds/" preload="true" id=""></audio> -->
 				<audio src="sounds/autotracker-ld24.ogg" preload="true" id="music"></audio>
+				<audio src="sounds/boss.wav" preload="true" id="boss-sound"></audio>
+				<audio src="sounds/boss_dead.wav" preload="true" id="boss-dead-sound"></audio>
+				<audio src="sounds/boss_hit.wav" preload="true" id="boss-hit-sound"></audio>
+				<audio src="sounds/hurt.wav" preload="true" id="hurt-sound"></audio>
+				<audio src="sounds/jump.wav" preload="true" id="jump-sound"></audio>
+				<audio src="sounds/kill.wav" preload="true" id="kill-sound"></audio>
+				<audio src="sounds/missile.wav" preload="true" id="missile-sound"></audio>
+				<audio src="sounds/pickup.wav" preload="true" id="pickup-sound"></audio>
+				<audio src="sounds/shoot.wav" preload="true" id="shoot-sound"></audio>
 			</div>
 			<button onclick="Music.pause();">Oh god make the music stop</button>
 			<div>This "game" is part of the <a href="http://www.ludumdare.com/compo/ludum-dare-24/?action=preview&uid=11132">Ludum Dare #24</a> 48 hour game competition</div>
