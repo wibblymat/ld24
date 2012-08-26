@@ -144,6 +144,11 @@ window.onload = function()
 			map.yscroll += 1;
 		}
 
+		if(map.xscroll < 0) map.xscroll = 0;
+		if(map.xscroll > map.width - width) map.xscroll = map.width - width;
+		if(map.yscroll < 0) map.yscroll = 0;
+		if(map.yscroll > map.height - height) map.yscroll = map.height - height;
+
 		//controls.keyState = {};
 		for(i = 0; i < Game.units.length; i++)
 		{
@@ -188,7 +193,7 @@ window.onload = function()
 		for(index = 0; index < objects.length; index++)
 		{
 			object = objects[index];
-			drawing.sprite(sprites[object.sprite], object.x * gridSize, object.y * gridSize);
+			drawing.sprite(sprites[object.sprite], (object.x - map.xscroll) * gridSize, (object.y - map.yscroll) * gridSize);
 		}
 	};
 
@@ -198,7 +203,7 @@ window.onload = function()
 		for(var i = 0; i < Game.selected.items.length; i++)
 		{
 			var item = Game.selected.items[i];
-			$(".unit-selection").append($("<li><img class='unit-icon' src='" + /*sprites[item.sprite].toDataURL()*/'' + "'/><div class='name'>" + item.name + "</div><div class='health'>" + item.health + "</div><div class='move'>" + item.moveLeft + "/" + item.speed + "</div></li>"));
+			$(".unit-selection").append($("<li><img class='unit-icon' src='" + /*sprites[item.sprite].toDataURL()*/'' + "'/><div class='name'>" + item.name + "</div><div class='health'>" + item.health + "</div>" + (item.speed ? "<div class='move'>" + item.moveLeft + "/" + item.speed + "</div>" : "" ) + "</li>"));
 		}
 	};
 

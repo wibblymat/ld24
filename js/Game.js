@@ -10,9 +10,11 @@ Game.BaseObject = function(side, x, y)
 	this.width = 1;
 	this.height = 1;
 	this.health = 10;
+	this.damage = 0;
 	this.armor = 0;
 	this.active = false;
 	this.sprite = "";
+	this.level = 1;
 	this.name = "Bugged object :p";
 };
 
@@ -25,15 +27,45 @@ Game.BaseObject.prototype.startTurn = function()
 
 };
 
+Game.BaseObject.prototype.levelUp = function()
+{
+	if(this.level < 10)
+	{
+		this.level++;
+		this.health *= 1.1;
+		this.damage *= 0.9;
+	}
+};
+
+Game.BaseObject.prototype.hit = function(damage)
+{
+	this.damage += damage;
+	if(this.damage > this.health)
+	{
+		this.die();
+	}
+};
+
+Game.BaseObject.prototype.die = function()
+{
+	console.log("This unit was meant to die but I haven't implemented that right now. Disabling it a bit instead.");
+	this.speed = 0;
+	this.strength = 0;
+};
+
 // Buildings
 Game.Spawner = function(side, x, y)
 {
+	var spawnGrunt = function(){};
+
 	var object = new Game.BaseObject(side, x, y);
 	object.width = 2;
 	object.height = 2;
 	object.sprite = "spawner";
 	object.health = 1000;
 	object.name = "Spawner";
+	object.orders = [spawnGrunt];
+	object.action = null;
 	return object;
 };
 
@@ -149,10 +181,20 @@ Game.Unit = function(side, x, y)
 };
 
 // Units
+Game.Grunt = function(side, x, y)
+{
+	var object = new Game.Unit(side, x, y);
+	object.sprite = "grunt";
+	object.health = 10;
+	object.name = "Grunt";
+	return object;
+};
+
 Game.Soldier = function(side, x, y)
 {
 	var object = new Game.Unit(side, x, y);
 	object.sprite = "soldier";
+	object.strength = 4;
 	object.health = 50;
 	object.name = "Soldier";
 	return object;
@@ -163,6 +205,7 @@ Game.Knight = function(side, x, y)
 	var object = new Game.Unit(side, x, y);
 	object.sprite = "knight";
 	object.health = 60;
+	object.strength = 6;
 	object.speed = 5;
 	object.moveLeft = object.speed;
 	object.name = "Knight";
@@ -242,3 +285,5 @@ Game.reset = function()
 };
 
 Game.reset();
+
+

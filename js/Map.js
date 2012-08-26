@@ -13,7 +13,9 @@ var Map = function()
 	{
 		this.tiles[i] = [];
 		for(var j = 0; j < this.width; j++)
-			this.tiles[i][j] = 1;
+		{
+			this.tiles[i][j] = (i === 0 || j === 0 || i === this.width - 1 || j === this.height - 1) ? 2 : 1;
+		}
 	}
 
 };
