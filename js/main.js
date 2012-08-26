@@ -203,7 +203,7 @@ window.onload = function()
 		for(var i = 0; i < Game.selected.items.length; i++)
 		{
 			var item = Game.selected.items[i];
-			$(".unit-selection").append($("<li><img class='unit-icon' src='" + /*sprites[item.sprite].toDataURL()*/'' + "'/><div class='name'>" + item.name + "</div><div class='health'>" + item.health + "</div>" + (item.speed ? "<div class='move'>" + item.moveLeft + "/" + item.speed + "</div>" : "" ) + "</li>"));
+			$(".unit-selection").append($("<li><img class='unit-icon' src='" + sprites[item.sprite].toDataURL() + "'/><div class='name'>" + item.name + "</div><div class='health'>" + item.health + "</div>" + (item.speed ? "<div class='move'>" + item.moveLeft + "/" + item.speed + "</div>" : "" ) + "</li>"));
 		}
 	};
 
