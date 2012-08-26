@@ -45,7 +45,7 @@ window.onload = function()
 	window.Music.loop = true;
 //	window.Music.play();
 
-	var frame, level, lives, player = {}, xscroll, scrolling, standing, direction, flashing, bullets, shootDelay, monsters, levelObjects, boss, missile;
+	var frame, level, lives, player = {}, xscroll, scrolling, standing, direction, flashing, bullets, shootDelay, monsters, levelObjects, boss, missile, fossil;
 
 	var reset = function()
 	{
@@ -53,7 +53,13 @@ window.onload = function()
 		lives = 3;
 		frame = 0;
 		shootDelay = 0;
+		newLevel();
+	};
+
+	var newLevel = function()
+	{
 		startLevel();
+		splash($("#level" + level).get(0), loop);
 	};
 
 	var startLevel = function()
@@ -71,6 +77,7 @@ window.onload = function()
 		direction = 1;
 		flashing = 60;
 		standing = true;
+		fossil = false;
 
 		for(i in Levels[level - 1].objects)
 		{
@@ -85,8 +92,6 @@ window.onload = function()
 		}
 	};
 
-	reset();
-
 	var pick = function(set)
 	{
 		return set[Math.floor(Math.random() * set.length)];
@@ -97,8 +102,7 @@ window.onload = function()
 		if(frameRequest) window.cancelAnimationFrame(frameRequest);
 		frameRequest = window.requestAnimationFrame(loop);
 
-		update();
-		draw();
+		if(update()) draw();
 	};
 
 	var die = function()
@@ -117,16 +121,38 @@ window.onload = function()
 
 	var victory = function()
 	{
-		if(frameRequest) window.cancelAnimationFrame(frameRequest);
-		frameRequest = window.requestAnimationFrame(victory);
-
-		drawing.clear();
-		drawing.write("You win, the end", 100, 100, "yellow");
+		splash($("#win").get(0), menu);
 	};
 
 	var lose = function()
 	{
+		splash($("#lose").get(0), menu);
+	};
+
+	var menu = function()
+	{
 		reset();
+		loop();
+	};
+
+	var splash = function(image, continuation)
+	{
+		if(frameRequest) window.cancelAnimationFrame(frameRequest);
+		var splashLoop = function()
+		{
+			frameRequest = window.requestAnimationFrame(splashLoop);
+
+			for(var i in controls.keyState)
+			{
+				continuation();
+				return;
+			}
+		};
+
+		drawing.clear();
+		drawing.context.drawImage(image, 0, 0);
+		setTimeout(splashLoop, 1000);
+		controls.keyState = {};
 	};
 
 	var shoot = function()
@@ -249,7 +275,7 @@ window.onload = function()
 			if((collide.l || collide.r || collide.t || collide.b) && object.type === "water")
 			{
 				die();
-				return;
+				return false;
 			}
 		}
 
@@ -283,7 +309,7 @@ window.onload = function()
 			if(missile.x < player.x + 16 && missile.x + 16 > player.x && missile.y < player.y + 16 && missile.y + 16 > player.y)
 			{
 				die();
-				return;
+				return false;
 			}
 		}
 
@@ -297,7 +323,7 @@ window.onload = function()
 			if(collide.l || collide.r || collide.t || collide.b)
 			{
 				die();
-				return;
+				return false;
 			}
 
 			for(i in levelObjects)
@@ -342,10 +368,10 @@ window.onload = function()
 
 		// Check for death and end of level
 		if(player.x < 0) player.x = 0;
-		if(player.x > Levels[level - 1].width && boss === null)
+		if(player.x > Levels[level - 1].width - 100 && fossil)
 		{
 			win();
-			return;
+			return false;
 		}
 		else if(player.x > Levels[level - 1].width)
 		{
@@ -355,10 +381,8 @@ window.onload = function()
 		if(player.y < 0)
 		{
 			die();
-			return;
+			return false;
 		}
-
-		// Sound effects
 
 		// Shooting/bullets
 		for(i in bullets)
@@ -388,6 +412,7 @@ window.onload = function()
 					{
 						sounds.boss_dead.play();
 						boss = null;
+						fossil = true;
 					}
 					else
 					{
@@ -422,6 +447,8 @@ window.onload = function()
 		}
 
 		if(flashing > 0) flashing--;
+
+		return true;
 	};
 
 	var colours = {
@@ -435,13 +462,15 @@ window.onload = function()
 
 	var draw = function()
 	{
-		var i;
+		var i, colour;
 		drawing.clear();
 
 		for(i = 0; i < lives; i++)
 		{
 			drawing.sprite(sprites.heart, 10 + i * 16, canvas.height - 10);
 		}
+
+		drawing.write("Level " + level, 70, canvas.height - 10, "rgb(200, 200, 200)");
 
 		if(flashing === 0 || flashing % 3 === 0)
 			drawing.rect(player.x - xscroll, player.y, 16, 16, colours.player);
@@ -466,10 +495,22 @@ window.onload = function()
 
 		if(boss !== null)
 		{
-			var colour = [ Math.floor( Math.random() * 256 ), Math.floor( Math.random() * 256 ), Math.floor( Math.random() * 256 ) ];
+			colour = [ Math.floor( Math.random() * 256 ), Math.floor( Math.random() * 256 ), Math.floor( Math.random() * 256 ) ];
 			var randcolour = "rgb( " + colour[ 0 ] + ", " + colour[ 1 ] + ", " + colour[ 2 ] + " )";
 
 			drawing.rect(boss.x - xscroll - 32, boss.y - 32, 64, 64, randcolour);
+		}
+
+		if(fossil)
+		{
+			colour = "rgb(64, 128, 200)";
+			var left = Levels[level - 1].width - xscroll - 100;
+
+			drawing.rect(left, 16, 5, 40, colour);
+			drawing.rect(left + 70, 16, 5, 40, colour);
+			drawing.rect(left, 16, 70, 5, colour);
+			drawing.rect(left, 56, 75, 5, colour);
+			drawing.rect(left + 5, 16 + 5, 65, 35, "rgb(90, 160, 255)");
 		}
 
 		if(missile)
@@ -480,5 +521,5 @@ window.onload = function()
 
 
 	drawing.focus();
-	loop();
+	reset();
 };
