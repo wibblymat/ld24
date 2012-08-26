@@ -1,0 +1,77 @@
+iNudge!
+
+
+Theme brainstorming
+-------------------
+Evolution!
+
+Ok, full idea. Turn based strategy game. Fantasy setting. You build various buildings to increase your capabilities. You produce various units. When the units do things they gain experience and eventually level up. On level up you can spend points on "evolving" them - changing their stats and abilities a small amount per level.
+
+Think Warcraft meets Civ 4
+
+There will be an enemy AI, win by destroying their base.
+
+Need to have resource collection. Which means resource tiles.
+
+Since all units come out of the spawner, and all resources are taken there, there is no advantage to building things in the enemy base, for e.g.
+
+Building level up is a 10% improvement, compound. Level up time and cost is also exponential. Each upgrade maxes out at 10 (x2.6).
+
+Buildings:
+	Spawner - where your new guys come out of when you create them. Allows creating grunts from the off. This is your base.
+		Decreases spawn time
+	Barracks - Allows creating martial units. Adds soldier (melee).
+		Increase strength
+	Stables - Allows creating mounted units. Adds cavalry (horse).
+		Increase horse speed
+	Temple - Allows mystical units. Adds priest (healer).
+		Increase health
+	Workshop - Allows crafted units. Adds archer (ranged)
+		Increase building strength
+	School - Allows engineering units. Adds catapult with workshop (ranged, horse)
+		Increase XP gain
+	Blacksmith - Allows armored units. Adds knight with stables (horse)
+		Increase armor
+	House (2x1) - Increases the number of units you can have. 4 units per house
+		Increase capacity (obviously requires a whole number increase to get another unit. Going from 4 to 4.4 doesn't help straight away)
+	Mine (1x1) - Where gold or iron come from
+		Decrease resource collection time
+
+
+Resources:
+	Gold
+	Lumber
+	Iron
+
+Sprites:
+	Spawner (2x2)
+	Barracks (3x3)
+	Stables (4x1)
+	Temple (3x2)
+	Workshop (2x2)
+	School (3x3)
+	Blacksmith
+	House
+	Grunt
+	Soldier
+	Cavalry
+	Priest
+	Archer
+	Catapult
+	Knight
+	Grass
+	Rocks
+	Mine
+	Gold
+	Iron
+	Tree
+	Coins (icon)
+	Planks (icon)
+
+Bonuses
+-------
+Achievements
+High scores
+Easter eggs
+Super slo-mo finishing moves
+The kind of joyous triumphant show you get when you complete a Peggle level
